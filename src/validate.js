@@ -9,7 +9,6 @@
  */
 
 import invariant from 'invariant';
-import warning from './warning';
 
 var loggedTypeFailures = {};
 
@@ -36,11 +35,8 @@ var validate = (propTypes, props, className) => {
       } catch (ex) {
         error = ex;
       }
-      if (error instanceof Error && !(error.message in loggedTypeFailures)) {
-        // Only monitor this failure once because there tends to be a lot of the
-        // same error.
-        loggedTypeFailures[error.message] = true;
-        warning(false, 'Failed propType: ' + error.message);
+      if (error instanceof Error) {
+        throw error;
       }
     }
   }
