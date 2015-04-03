@@ -8,33 +8,18 @@
  *
  */
 
-import invariant from 'invariant';
-
 var loggedTypeFailures = {};
 
 var validate = (propTypes, props, className) => {
   for (var propName in propTypes) {
     if (propTypes.hasOwnProperty(propName)) {
-      var error;
-      // Prop type validation may throw. In case they do, we don't want to
-      // fail the render phase where it didn't fail before. So we log it.
-      // After these have been cleaned up, we'll let them throw.
-      try {
-        // This is intentionally an invariant that gets caught. It's the same
-        // behavior as without this statement except with a better message.
-        invariant(
-          typeof propTypes[propName] === 'function',
-          '%s: %s type `%s` is invalid; it must be a function, usually from ' +
-          'PropTypes.',
-          className,
-          'attributes',
-          propName
+      if (typeof propTypes[propName] !== 'function') {
+        throw new Error(
+          className + ': attributes type `' + propName + '` is invalid; it must be a function'
         );
-
-        error = propTypes[propName](props, propName, className, 'prop');
-      } catch (ex) {
-        error = ex;
       }
+
+      var error = propTypes[propName](props, propName, className, 'prop');
       if (error instanceof Error) {
         throw error;
       }
