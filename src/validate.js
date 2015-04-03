@@ -11,7 +11,8 @@
 var loggedTypeFailures = {};
 
 var validate = (propTypes, props, className) => {
-  for (var propName in propTypes) {
+  var propName;
+  for (propName in propTypes) {
     if (propTypes.hasOwnProperty(propName)) {
       if (typeof propTypes[propName] !== 'function') {
         throw new Error(
@@ -23,6 +24,14 @@ var validate = (propTypes, props, className) => {
       if (error instanceof Error) {
         throw error;
       }
+    }
+  }
+
+  for (propName in props) {
+    if (props.hasOwnProperty(propName) && !propTypes.hasOwnProperty(propName)) {
+      throw new Error(
+        'Unknown prop `' + propName + '`' + (className ? ' passed to ' + className : '')
+      );
     }
   }
 };
